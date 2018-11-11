@@ -22,7 +22,6 @@ void Configuration::load(Configuration::settings &parameter)
 {
     parameter.path_input = m_ptree->get<std::string>("Path.input");
     parameter.path_output = m_ptree->get<std::string>("Path.output");
-    m_parameters = parameter;
 }
 
 bool Configuration::valid()
