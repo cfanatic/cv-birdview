@@ -31,8 +31,8 @@ public:
     void save();
     bool exist();
     bool valid();
-    std::string get(const parameters &parameter);
-    void set(const parameters &parameter, std::string value);
+    std::string get(const parameters &param);
+    void set(const parameters &param, std::string value);
     void debug();
 
 private:

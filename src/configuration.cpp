@@ -31,11 +31,11 @@ bool Configuration::valid()
     return !check;
 }
 
-std::string Configuration::get(const parameters &parameter)
+std::string Configuration::get(const parameters &param)
 {
     std::string value;
 
-    switch (parameter)
+    switch (param)
     {
         case INPUT: value = m_parameters.path_input; break;
         case OUTPUT: value = m_parameters.path_output; break;
@@ -44,9 +44,9 @@ std::string Configuration::get(const parameters &parameter)
     return value;
 }
 
-void Configuration::set(const parameters &parameter, std::string value)
+void Configuration::set(const parameters &param, std::string value)
 {
-    switch (parameter)
+    switch (param)
     {
         case INPUT: m_parameters.path_input = value; break;
         case OUTPUT: m_parameters.path_output = value; break;
