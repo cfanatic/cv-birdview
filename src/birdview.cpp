@@ -99,19 +99,22 @@ void Birdview::viewpoints()
     cv::putText(m_imgInput, "BL", contourFinal[3], 5, 1, cv::Scalar(0, 0, 255), 2);
 }
 
-void Birdview::debug()
+void Birdview::debug(const modes &level)
 {
-    // TODO: Conditional check needs to be expanded
     if (!m_imgInput.empty())
     {
-        cv::imshow("m_imgInput", m_imgInput);
-        cv::imshow("m_imgSmooth", m_imgSmooth);
-        cv::imshow("m_imgCanny", m_imgCanny);
-        cv::imshow("m_imgContours", m_imgContours);
+        switch (level)
+        {
+            case INPUT: cv::imshow("m_imgInput", m_imgInput); break;
+            case SMOOTH: cv::imshow("m_imgSmooth", m_imgSmooth); break;
+            case CANNY: cv::imshow("m_imgCanny", m_imgCanny); break;
+            case CONTOURS: cv::imshow("m_imgContours", m_imgContours); break;
+            default: cv::imshow("m_imgInput", m_imgInput); break;
+        }
         cv::waitKey(0);
     }
     else
     {
-        std::cout << "No image found!" << std::endl;
+        std::cout << "No image initialized!" << std::endl;
     }
 }

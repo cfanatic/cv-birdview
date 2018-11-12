@@ -8,6 +8,14 @@ class Birdview
 {
 
 public:
+    enum modes
+    {
+        INPUT,
+        SMOOTH,
+        CANNY,
+        CONTOURS
+    };
+
     explicit Birdview();
     ~Birdview();
 
@@ -16,7 +24,7 @@ public:
     void contours();
     void boundingbox();
     void viewpoints();
-    void debug();
+    void debug(const modes &level);
 
 private:
     static const unsigned int SCALE = 5;

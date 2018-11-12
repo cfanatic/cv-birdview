@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     image.contours();
     image.boundingbox();
     image.viewpoints();
-    image.debug();
+    image.debug(Birdview::INPUT);
 
     return 0;
 }
