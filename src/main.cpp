@@ -11,5 +11,11 @@ int main(int argc, char *argv[])
     Configuration config;
     config.debug();
 
+    Birdview image;
+    image.load(config.get(Configuration::INPUT) + "/a.jpg");
+    image.preprocess();
+    image.contours();
+    image.debug();
+
     return 0;
 }
