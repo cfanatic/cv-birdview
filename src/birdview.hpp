@@ -14,12 +14,14 @@ public:
     void load(std::string path);
     void preprocess();
     void contours();
+    void boundingbox();
     void debug();
 
 private:
     static const unsigned int SCALE = 5;
     cv::RNG m_rng;
     cv::Mat m_imgInput;
+    cv::Mat m_imgGrey;
     cv::Mat m_imgSmooth;
     cv::Mat m_imgCanny;
     cv::Mat m_imgContours;

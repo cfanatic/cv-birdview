@@ -17,8 +17,8 @@ void Birdview::load(std::string path)
 void Birdview::preprocess()
 {
     cv::resize(m_imgInput, m_imgInput, cv::Size(m_imgInput.cols / SCALE, m_imgInput.rows / SCALE));
-    cv::cvtColor(m_imgInput, m_imgInput, cv::COLOR_BGR2GRAY);
-    cv::bilateralFilter(m_imgInput, m_imgSmooth, 11, 17, 17);
+    cv::cvtColor(m_imgInput, m_imgGrey, cv::COLOR_BGR2GRAY);
+    cv::bilateralFilter(m_imgGrey, m_imgSmooth, 11, 17, 17);
     cv::Canny(m_imgSmooth, m_imgCanny, 30, 200);
 }
 
@@ -34,8 +34,37 @@ void Birdview::contours()
     }
 }
 
+void Birdview::boundingbox()
+{
+    double temp, area, arclen = 0;
+    int indexAreaMax = 0;
+
+    for (int i = 0; i < static_cast<int>(m_contours.size()); i++)
+    {
+        temp = cv::contourArea(m_contours[i]);
+        if (temp > area)
+        {
+            arclen = cv::arcLength(m_contours[i], true);
+            cv::approxPolyDP(m_contours[i], m_contourApprox, 0.02 * arclen, true);
+            if (m_contourApprox.size() == 4)
+            {
+                area = temp;
+                indexAreaMax = i;
+            }
+            else
+            {
+                continue;
+            }
+        }
+    }
+    cv::drawContours(m_imgInput, m_contours, indexAreaMax, cv::Scalar(0, 255, 0), 2, 8, m_hierarchy, 0, cv::Point());
+    std::cout << "Contour Index:\t" << indexAreaMax << std::endl;
+    std::cout << "Contour Edges:\t" << m_contourApprox.size() << std::endl;
+}
+
 void Birdview::debug()
 {
+    // TODO: Conditional check needs to be expanded
     if (!m_imgInput.empty())
     {
         cv::imshow("m_imgInput", m_imgInput);

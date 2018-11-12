@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     image.load(config.get(Configuration::INPUT) + "/a.jpg");
     image.preprocess();
     image.contours();
+    image.boundingbox();
     image.debug();
 
     return 0;
