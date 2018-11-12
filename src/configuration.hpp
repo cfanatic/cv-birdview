@@ -26,7 +26,6 @@ public:
     explicit Configuration();
     ~Configuration();
 
-public:
     void load(settings &config);
     void load();
     void save();
