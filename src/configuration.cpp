@@ -31,7 +31,7 @@ bool Configuration::valid()
     return !check;
 }
 
-std::string Configuration::get(const fields &parameter)
+std::string Configuration::get(const parameters &parameter)
 {
     std::string value;
 
@@ -44,7 +44,7 @@ std::string Configuration::get(const fields &parameter)
     return value;
 }
 
-void Configuration::set(const fields &parameter, std::string value)
+void Configuration::set(const parameters &parameter, std::string value)
 {
     switch (parameter)
     {

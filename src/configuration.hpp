@@ -17,7 +17,7 @@ public:
         std::string path_output;
     };
 
-    enum fields
+    enum parameters
     {
         INPUT,
         OUTPUT
@@ -31,8 +31,8 @@ public:
     void save();
     bool exist();
     bool valid();
-    std::string get(const fields &parameter);
-    void set(const fields &parameter, std::string value);
+    std::string get(const parameters &parameter);
+    void set(const parameters &parameter, std::string value);
     void debug();
 
 private:
