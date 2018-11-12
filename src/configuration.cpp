@@ -55,6 +55,6 @@ void Configuration::set(const fields &parameter, std::string value)
 
 void Configuration::debug()
 {
-    std::cout << "path_input:\t\t" << m_parameters.path_input;
-    std::cout << "path_output:\t\t" << m_parameters.path_output;
+    std::cout << "path_input:\t" << m_parameters.path_input << std::endl;
+    std::cout << "path_output:\t" << m_parameters.path_output << std::endl;
 }
