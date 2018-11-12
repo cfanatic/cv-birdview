@@ -62,6 +62,43 @@ void Birdview::boundingbox()
     std::cout << "Contour Edges:\t" << m_contourApprox.size() << std::endl;
 }
 
+void Birdview::viewpoints()
+{
+    std::vector<cv::Point> contourFinal;
+    std::vector<int> pointOfView;
+    int idxPoint;
+
+    std::cout << "Contour Edge 0:\t" << m_contourApprox[0].x << " " << m_contourApprox[0].y << std::endl;
+    std::cout << "Contour Edge 1:\t" << m_contourApprox[1].x << " " << m_contourApprox[1].y << std::endl;
+    std::cout << "Contour Edge 2:\t" << m_contourApprox[2].x << " " << m_contourApprox[2].y << std::endl;
+    std::cout << "Contour Edge 3:\t" << m_contourApprox[3].x << " " << m_contourApprox[3].y << std::endl;
+
+    contourFinal.resize(4);
+    for (int i = 0; i < static_cast<int>(m_contourApprox.size()); i++)
+    {
+        pointOfView.push_back(m_contourApprox[i].x + m_contourApprox[i].y);
+    }
+    idxPoint = std::min_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
+    contourFinal[0] = m_contourApprox[idxPoint];
+    idxPoint = std::max_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
+    contourFinal[2] = m_contourApprox[idxPoint];
+
+    pointOfView.clear();
+    for (int i = 0; i < static_cast<int>(m_contourApprox.size()); i++)
+    {
+        pointOfView.push_back(m_contourApprox[i].x - m_contourApprox[i].y);
+    }
+    idxPoint = std::max_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
+    contourFinal[1] = m_contourApprox[idxPoint];
+    idxPoint = std::min_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
+    contourFinal[3] = m_contourApprox[idxPoint];
+
+    cv::putText(m_imgInput, "TL", contourFinal[0], 5, 1, cv::Scalar(0, 0, 255), 2);
+    cv::putText(m_imgInput, "TR", contourFinal[1], 5, 1, cv::Scalar(0, 0, 255), 2);
+    cv::putText(m_imgInput, "BR", contourFinal[2], 5, 1, cv::Scalar(0, 0, 255), 2);
+    cv::putText(m_imgInput, "BL", contourFinal[3], 5, 1, cv::Scalar(0, 0, 255), 2);
+}
+
 void Birdview::debug()
 {
     // TODO: Conditional check needs to be expanded

@@ -15,6 +15,7 @@ public:
     void preprocess();
     void contours();
     void boundingbox();
+    void viewpoints();
     void debug();
 
 private:

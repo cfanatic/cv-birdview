@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     image.preprocess();
     image.contours();
     image.boundingbox();
+    image.viewpoints();
     image.debug();
 
     return 0;
