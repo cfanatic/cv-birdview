@@ -11,13 +11,17 @@ int main(int argc, char *argv[])
     Configuration config;
     config.debug();
 
+    std::string path_input = config.get(Configuration::INPUT) + "/" + config.get(Configuration::FILENAME);
+    std::string path_transform = boost::replace_all_copy(path_input, ".jpg", "_transform.jpg");
+
     Birdview image;
-    image.load(config.get(Configuration::INPUT) + "/a.jpg");
+    image.load(path_input);
     image.preprocess();
     image.contours();
     image.boundingbox();
     image.viewpoints();
-    image.debug(Birdview::INPUT);
+    image.transform();
+    image.debug(Birdview::TRANSFORM);
 
     return 0;
 }

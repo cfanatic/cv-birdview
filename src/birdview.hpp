@@ -13,7 +13,8 @@ public:
         INPUT,
         SMOOTH,
         CANNY,
-        CONTOURS
+        CONTOURS,
+        TRANSFORM
     };
 
     explicit Birdview();
@@ -24,20 +25,23 @@ public:
     void contours();
     void boundingbox();
     void viewpoints();
+    void transform();
     void debug(const modes &level);
 
 private:
     static const unsigned int SCALE = 5;
     cv::RNG m_rng;
     cv::Mat m_imgInput;
+    cv::Mat m_imgInputClone;
     cv::Mat m_imgGrey;
     cv::Mat m_imgSmooth;
     cv::Mat m_imgCanny;
     cv::Mat m_imgContours;
-    cv::Mat m_imgOutput;
+    cv::Mat m_imgTransform;
     std::vector<std::vector<cv::Point> > m_contours;
     std::vector<cv::Vec4i> m_hierarchy;
     std::vector<cv::Point> m_contourApprox;
+    std::vector<cv::Point> m_contourFinal;
 };
 
 #endif // BIRDVIEW_HPP
