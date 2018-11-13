@@ -21,6 +21,7 @@ public:
     ~Birdview();
 
     void load(std::string path);
+    void save(std::string path);
     void preprocess();
     void contours();
     void boundingbox();

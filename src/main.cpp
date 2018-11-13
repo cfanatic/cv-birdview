@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
     image.boundingbox();
     image.viewpoints();
     image.transform();
+    image.save(path_transform);
     image.debug(Birdview::TRANSFORM);
 
     return 0;

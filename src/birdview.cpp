@@ -14,6 +14,14 @@ void Birdview::load(std::string path)
     m_imgInput = cv::imread(path);
 }
 
+void Birdview::save(std::string path)
+{
+    std::vector<int> compression_params;
+    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+    compression_params.push_back(5);
+    cv::imwrite(path, m_imgTransform, compression_params);
+}
+
 void Birdview::preprocess()
 {
     cv::resize(m_imgInput, m_imgInput, cv::Size(m_imgInput.cols / SCALE, m_imgInput.rows / SCALE));
