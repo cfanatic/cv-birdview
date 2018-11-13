@@ -10,13 +10,13 @@ Birdview::~Birdview()
 {
 }
 
-void Birdview::load(std::string path)
+void Birdview::load(const std::string &path)
 {
     // Load source image from file
     m_imgInput = cv::imread(path);
 }
 
-void Birdview::save(std::string path)
+void Birdview::save(const std::string &path)
 {
     // Save transformed image to file
     std::vector<int> compression_params;
@@ -32,7 +32,7 @@ void Birdview::preprocess()
     // Convert to grey scale
     cv::cvtColor(m_imgInput, m_imgGrey, cv::COLOR_BGR2GRAY);
     // Apply smoothing filter
-    cv::bilateralFilter(m_imgGrey, m_imgSmooth, 11, 17, 17);
+    cv::bilateralFilter(m_imgGrey, m_imgSmooth, 21, 27, 21);
     // Detect edges using canny filter
     cv::Canny(m_imgSmooth, m_imgCanny, 30, 200);
     // Create a copy of the source image

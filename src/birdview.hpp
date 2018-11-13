@@ -20,8 +20,8 @@ public:
     explicit Birdview();
     ~Birdview();
 
-    void load(std::string path);
-    void save(std::string path);
+    void load(const std::string &path);
+    void save(const std::string &path);
     void preprocess();
     void contours();
     void boundingbox();
