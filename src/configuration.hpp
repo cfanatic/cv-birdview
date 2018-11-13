@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/version.hpp>
@@ -15,12 +16,14 @@ public:
     {
         std::string path_input;
         std::string path_output;
+        std::string file_name;
     };
 
     enum parameters
     {
         INPUT,
-        OUTPUT
+        OUTPUT,
+        FILENAME
     };
 
     explicit Configuration();
