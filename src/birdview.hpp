@@ -41,8 +41,8 @@ private:
     cv::Mat m_imgTransform;
     std::vector<std::vector<cv::Point> > m_contours;
     std::vector<cv::Vec4i> m_hierarchy;
-    std::vector<cv::Point> m_contourApprox;
-    std::vector<cv::Point> m_contourFinal;
+    std::vector<cv::Point> m_boundBox;
+    std::vector<cv::Point> m_boundBoxSort;
 };
 
 #endif // BIRDVIEW_HPP

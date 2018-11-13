@@ -2,6 +2,7 @@
 
 Birdview::Birdview()
 {
+    // Initialize random number generator with time seed
     m_rng = cv::RNG(time(NULL));
 }
 
@@ -11,11 +12,13 @@ Birdview::~Birdview()
 
 void Birdview::load(std::string path)
 {
+    // Load source image from file
     m_imgInput = cv::imread(path);
 }
 
 void Birdview::save(std::string path)
 {
+    // Save transformed image to file
     std::vector<int> compression_params;
     compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
     compression_params.push_back(5);
@@ -24,18 +27,25 @@ void Birdview::save(std::string path)
 
 void Birdview::preprocess()
 {
+    // Reduce image resolution
     cv::resize(m_imgInput, m_imgInput, cv::Size(m_imgInput.cols / SCALE, m_imgInput.rows / SCALE));
+    // Convert to grey scale
     cv::cvtColor(m_imgInput, m_imgGrey, cv::COLOR_BGR2GRAY);
+    // Apply smoothing filter
     cv::bilateralFilter(m_imgGrey, m_imgSmooth, 11, 17, 17);
+    // Detect edges using canny filter
     cv::Canny(m_imgSmooth, m_imgCanny, 30, 200);
+    // Create a copy of the source image
     m_imgInputClone = m_imgInput.clone();
 }
 
 void Birdview::contours()
 {
+    // Find contours in the image
     m_imgContours = cv::Mat::zeros(m_imgCanny.size(), CV_8UC3);
     cv::findContours(m_imgCanny, m_contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
 
+    // Draw each contour in a unique random color
     for(int i = 0; i < static_cast<int>(m_contours.size()); i++)
     {
         cv::Scalar color = cv::Scalar(m_rng(255), m_rng(255), m_rng(255));
@@ -45,20 +55,23 @@ void Birdview::contours()
 
 void Birdview::boundingbox()
 {
-    double temp, area, arclen = 0;
-    int indexAreaMax = 0;
+    double areaMax, area, perimeter = 0;
+    int areaMaxIndex = 0;
 
+    // Loop over all contours and find the bounding box with the largest area
     for (int i = 0; i < static_cast<int>(m_contours.size()); i++)
     {
-        temp = cv::contourArea(m_contours[i]);
-        if (temp > area)
+        area = cv::contourArea(m_contours[i]);
+        if (area > areaMax)
         {
-            arclen = cv::arcLength(m_contours[i], true);
-            cv::approxPolyDP(m_contours[i], m_contourApprox, 0.02 * arclen, true);
-            if (m_contourApprox.size() == 4)
+            // Approximate a polygonal curve with the specified precision
+            perimeter = cv::arcLength(m_contours[i], true);
+            cv::approxPolyDP(m_contours[i], m_boundBox, 0.02 * perimeter, true);
+            // Bounding box needs to consist of four line segments
+            if (m_boundBox.size() == 4)
             {
-                area = temp;
-                indexAreaMax = i;
+                areaMax = area;
+                areaMaxIndex = i;
             }
             else
             {
@@ -66,84 +79,96 @@ void Birdview::boundingbox()
             }
         }
     }
-    cv::drawContours(m_imgInput, m_contours, indexAreaMax, cv::Scalar(0, 255, 0), 2, 8, m_hierarchy, 0, cv::Point());
-    std::cout << "Contour Index:\t" << indexAreaMax << std::endl;
-    std::cout << "Contour Edges:\t" << m_contourApprox.size() << std::endl;
+
+    // Draw bounding box in green color
+    cv::drawContours(m_imgInput, m_contours, areaMaxIndex, cv::Scalar(0, 255, 0), 2, 8, m_hierarchy, 0, cv::Point());
+
+    // Output contour index and number of edges found which represent the bounding box
+    std::cout << "Box Index:\t" << areaMaxIndex << std::endl;
+    std::cout << "Box Edges:\t" << m_boundBox.size() << std::endl;
+    std::cout << "Box Vertex 0:\t" << m_boundBox[0].x << " " << m_boundBox[0].y << std::endl;
+    std::cout << "Box Vertex 1:\t" << m_boundBox[1].x << " " << m_boundBox[1].y << std::endl;
+    std::cout << "Box Vertex 2:\t" << m_boundBox[2].x << " " << m_boundBox[2].y << std::endl;
+    std::cout << "Box Vertex 3:\t" << m_boundBox[3].x << " " << m_boundBox[3].y << std::endl;
 }
 
 void Birdview::viewpoints()
 {
     std::vector<int> pointOfView;
-    int idxPoint;
+    int index;
 
-    std::cout << "Contour Edge 0:\t" << m_contourApprox[0].x << " " << m_contourApprox[0].y << std::endl;
-    std::cout << "Contour Edge 1:\t" << m_contourApprox[1].x << " " << m_contourApprox[1].y << std::endl;
-    std::cout << "Contour Edge 2:\t" << m_contourApprox[2].x << " " << m_contourApprox[2].y << std::endl;
-    std::cout << "Contour Edge 3:\t" << m_contourApprox[3].x << " " << m_contourApprox[3].y << std::endl;
-
-    m_contourFinal.resize(4);
-    for (int i = 0; i < static_cast<int>(m_contourApprox.size()); i++)
+    // Determine top-left and bottom-right vertex of the bounding box
+    m_boundBoxSort.resize(4);
+    for (int i = 0; i < static_cast<int>(m_boundBox.size()); i++)
     {
-        pointOfView.push_back(m_contourApprox[i].x + m_contourApprox[i].y);
+        pointOfView.push_back(m_boundBox[i].x + m_boundBox[i].y);
     }
-    idxPoint = std::min_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
-    m_contourFinal[0] = m_contourApprox[idxPoint];
-    idxPoint = std::max_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
-    m_contourFinal[2] = m_contourApprox[idxPoint];
+    index = std::min_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
+    m_boundBoxSort[0] = m_boundBox[index];
+    index = std::max_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
+    m_boundBoxSort[2] = m_boundBox[index];
 
+    // Determine top-right and bottom-left vertex of the bounding box
     pointOfView.clear();
-    for (int i = 0; i < static_cast<int>(m_contourApprox.size()); i++)
+    for (int i = 0; i < static_cast<int>(m_boundBox.size()); i++)
     {
-        pointOfView.push_back(m_contourApprox[i].x - m_contourApprox[i].y);
+        pointOfView.push_back(m_boundBox[i].x - m_boundBox[i].y);
     }
-    idxPoint = std::max_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
-    m_contourFinal[1] = m_contourApprox[idxPoint];
-    idxPoint = std::min_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
-    m_contourFinal[3] = m_contourApprox[idxPoint];
+    index = std::max_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
+    m_boundBoxSort[1] = m_boundBox[index];
+    index = std::min_element(std::begin(pointOfView), std::end(pointOfView)) - pointOfView.begin();
+    m_boundBoxSort[3] = m_boundBox[index];
 
-    cv::putText(m_imgInput, "TL", m_contourFinal[0], 5, 1, cv::Scalar(0, 0, 255), 2);
-    cv::putText(m_imgInput, "TR", m_contourFinal[1], 5, 1, cv::Scalar(0, 0, 255), 2);
-    cv::putText(m_imgInput, "BR", m_contourFinal[2], 5, 1, cv::Scalar(0, 0, 255), 2);
-    cv::putText(m_imgInput, "BL", m_contourFinal[3], 5, 1, cv::Scalar(0, 0, 255), 2);
+    // Draw perspective labels with red color
+    cv::putText(m_imgInput, "TL", m_boundBoxSort[0], 5, 1, cv::Scalar(0, 0, 255), 2);
+    cv::putText(m_imgInput, "TR", m_boundBoxSort[1], 5, 1, cv::Scalar(0, 0, 255), 2);
+    cv::putText(m_imgInput, "BR", m_boundBoxSort[2], 5, 1, cv::Scalar(0, 0, 255), 2);
+    cv::putText(m_imgInput, "BL", m_boundBoxSort[3], 5, 1, cv::Scalar(0, 0, 255), 2);
 }
 
 void Birdview::transform()
 {
+    cv::Point2f sourceVertex[4], destVertex[4];
+    cv::Mat transMatrix;
     int aWidth, bWidth, maxWidth;
     int aHeight, bHeight, maxHeight;
     double distance;
 
-    distance = std::sqrt(std::pow(m_contourFinal[2].x - m_contourFinal[3].x, 2) + std::pow(m_contourFinal[2].y - m_contourFinal[3].y, 2));
+    // Determine bounding box edge with the largest width
+    distance = std::sqrt(std::pow(m_boundBoxSort[2].x - m_boundBoxSort[3].x, 2) + std::pow(m_boundBoxSort[2].y - m_boundBoxSort[3].y, 2));
     aWidth = static_cast<int>(distance);
-    distance = std::sqrt(std::pow(m_contourFinal[1].x - m_contourFinal[0].x, 2) + std::pow(m_contourFinal[1].y - m_contourFinal[0].y, 2));
+    distance = std::sqrt(std::pow(m_boundBoxSort[1].x - m_boundBoxSort[0].x, 2) + std::pow(m_boundBoxSort[1].y - m_boundBoxSort[0].y, 2));
     bWidth = static_cast<int>(distance);
     maxWidth = (aWidth > bWidth) ? aWidth : bWidth;
 
-    distance = std::sqrt(std::pow(m_contourFinal[1].x - m_contourFinal[2].x, 2) + std::pow(m_contourFinal[1].y - m_contourFinal[2].y, 2));
+    // Determine bounding box edge with the largest height
+    distance = std::sqrt(std::pow(m_boundBoxSort[1].x - m_boundBoxSort[2].x, 2) + std::pow(m_boundBoxSort[1].y - m_boundBoxSort[2].y, 2));
     aHeight = static_cast<int>(distance);
-    distance = std::sqrt(std::pow(m_contourFinal[0].x - m_contourFinal[3].x, 2) + std::pow(m_contourFinal[0].y - m_contourFinal[3].y, 2));
+    distance = std::sqrt(std::pow(m_boundBoxSort[0].x - m_boundBoxSort[3].x, 2) + std::pow(m_boundBoxSort[0].y - m_boundBoxSort[3].y, 2));
     bHeight = static_cast<int>(distance);
     maxHeight = (aHeight > bHeight) ? aHeight : bHeight;
 
-    cv::Point2f sourcePoints[4], destPoints[4];
-    cv::Mat transMatrix;
+    // Determine source vertices
+    sourceVertex[0] = cv::Point2f(m_boundBoxSort[0].x, m_boundBoxSort[0].y);
+    sourceVertex[1] = cv::Point2f(m_boundBoxSort[1].x, m_boundBoxSort[1].y);
+    sourceVertex[2] = cv::Point2f(m_boundBoxSort[2].x, m_boundBoxSort[2].y);
+    sourceVertex[3] = cv::Point2f(m_boundBoxSort[3].x, m_boundBoxSort[3].y);
 
-    sourcePoints[0] = cv::Point2f(m_contourFinal[0].x, m_contourFinal[0].y);
-    sourcePoints[1] = cv::Point2f(m_contourFinal[1].x, m_contourFinal[1].y);
-    sourcePoints[2] = cv::Point2f(m_contourFinal[2].x, m_contourFinal[2].y);
-    sourcePoints[3] = cv::Point2f(m_contourFinal[3].x, m_contourFinal[3].y);
+    // Determine destination vertices
+    destVertex[0] = cv::Point2f(0, 0);
+    destVertex[1] = cv::Point2f(maxWidth - 1, 0);
+    destVertex[2] = cv::Point2f(maxWidth - 1, maxHeight - 1);
+    destVertex[3] = cv::Point2f(0, maxHeight - 1);
 
-    destPoints[0] = cv::Point2f(0, 0);
-    destPoints[1] = cv::Point2f(maxWidth - 1, 0);
-    destPoints[2] = cv::Point2f(maxWidth - 1, maxHeight - 1);
-    destPoints[3] = cv::Point2f(0, maxHeight - 1);
-
-    transMatrix = cv::getPerspectiveTransform(sourcePoints, destPoints);
+    // Calculate perspective transform matrix
+    transMatrix = cv::getPerspectiveTransform(sourceVertex, destVertex);
+    // Apply perspective transformation to source image
     cv::warpPerspective(m_imgInputClone, m_imgTransform, transMatrix, cv::Size(maxWidth, maxHeight));
 }
 
 void Birdview::debug(const modes &level)
 {
+    // Visualize image processing results
     if (!m_imgInput.empty())
     {
         switch (level)
