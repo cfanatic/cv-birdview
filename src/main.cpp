@@ -12,7 +12,8 @@ int main(int argc, char *argv[])
     config.debug();
 
     std::string path_input = config.get(Configuration::INPUT) + "/" + config.get(Configuration::FILENAME);
-    std::string path_transform = boost::replace_all_copy(path_input, ".jpg", "_transform.jpg");
+    std::string path_output = config.get(Configuration::OUTPUT) + "/" + config.get(Configuration::FILENAME);
+    std::string path_transform = boost::replace_all_copy(path_output, ".jpg", "_transform.jpg");
 
     Birdview image;
     image.load(path_input);
