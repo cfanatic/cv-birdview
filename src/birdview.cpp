@@ -44,9 +44,9 @@ void Birdview::preprocess()
     // Convert to grey scale
     cv::cvtColor(m_imgInput, m_imgGrey, cv::COLOR_BGR2GRAY);
     // Apply smoothing filter
-    cv::bilateralFilter(m_imgGrey, m_imgSmooth, 21, 27, 21);
+    cv::bilateralFilter(m_imgGrey, m_imgSmooth, -1, 27, 27);
     // Detect edges using canny filter
-    cv::Canny(m_imgSmooth, m_imgCanny, 30, 200);
+    cv::Canny(m_imgSmooth, m_imgCanny, 85, 255);
     // Create a copy of the source image
     m_imgInputClone = m_imgInput.clone();
 }
@@ -55,7 +55,7 @@ void Birdview::contours()
 {
     // Find contours in the image
     m_imgContours = cv::Mat::zeros(m_imgCanny.size(), CV_8UC3);
-    cv::findContours(m_imgCanny, m_contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+    cv::findContours(m_imgCanny, m_contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
     // Draw each contour in a unique random color
     for(int i = 0; i < static_cast<int>(m_contours.size()); i++)
