@@ -21,7 +21,7 @@ public:
     ~Birdview();
 
     void load(const std::string &path);
-    void save(const std::string &path);
+    void save(const std::string &path, const modes &level = TRANSFORM);
     void preprocess();
     void contours();
     void boundingbox();
