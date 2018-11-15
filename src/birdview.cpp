@@ -55,8 +55,8 @@ void Birdview::contours()
 
 void Birdview::boundingbox()
 {
-    double areaMax, area, perimeter = 0;
-    int areaMaxIndex = 0;
+    double areaMax, area, perimeter = 0.0;
+    int areaMaxIndex, areaMaxEdges = 0;
 
     // Loop over all contours and find the bounding box with the largest area
     for (int i = 0; i < static_cast<int>(m_contours.size()); i++)
@@ -72,6 +72,7 @@ void Birdview::boundingbox()
             {
                 areaMax = area;
                 areaMaxIndex = i;
+                areaMaxEdges = m_boundBox.size();
             }
             else
             {
@@ -85,7 +86,8 @@ void Birdview::boundingbox()
 
     // Output contour index and number of edges found which represent the bounding box
     std::cout << "Box Index:\t" << areaMaxIndex << std::endl;
-    std::cout << "Box Edges:\t" << m_boundBox.size() << std::endl;
+    std::cout << "Box Area:\t" << areaMax << std::endl;
+    std::cout << "Box Edges:\t" << areaMaxEdges << std::endl;
     std::cout << "Box Vertex 0:\t" << m_boundBox[0].x << " " << m_boundBox[0].y << std::endl;
     std::cout << "Box Vertex 1:\t" << m_boundBox[1].x << " " << m_boundBox[1].y << std::endl;
     std::cout << "Box Vertex 2:\t" << m_boundBox[2].x << " " << m_boundBox[2].y << std::endl;
