@@ -25,6 +25,7 @@ void Birdview::save(const std::string &path, const modes &level)
     {
         case INPUT: image = m_imgInput; break;
         case SMOOTH: image = m_imgSmooth; break;
+        case THRESHOLD: image = m_imgThreshold; break;
         case CANNY: image = m_imgCanny; break;
         case CONTOURS: image = m_imgContours; break;
         case TRANSFORM: image = m_imgTransform; break;
@@ -43,10 +44,12 @@ void Birdview::preprocess()
     cv::resize(m_imgInput, m_imgInput, cv::Size(m_imgInput.cols / SCALE, m_imgInput.rows / SCALE));
     // Convert to grey scale
     cv::cvtColor(m_imgInput, m_imgGrey, cv::COLOR_BGR2GRAY);
+    // Apply threshold
+    cv::threshold(m_imgGrey, m_imgThreshold, 165, 255, cv::THRESH_TOZERO);
     // Apply smoothing filter
-    cv::bilateralFilter(m_imgGrey, m_imgSmooth, -1, 27, 27);
-    // Detect edges using canny filter
-    cv::Canny(m_imgSmooth, m_imgCanny, 85, 255);
+    cv::bilateralFilter(m_imgGrey, m_imgSmooth, 40, 27, 27);
+    // Apply canny edge detection
+    cv::Canny(m_imgThreshold, m_imgCanny, 85, 255);
     // Create a copy of the source image
     m_imgInputClone = m_imgInput.clone();
 }
@@ -189,6 +192,7 @@ void Birdview::debug(const modes &level)
         {
             case INPUT: cv::imshow("m_imgInput", m_imgInput); break;
             case SMOOTH: cv::imshow("m_imgSmooth", m_imgSmooth); break;
+            case THRESHOLD: cv::imshow("m_imgThreshold", m_imgThreshold); break;
             case CANNY: cv::imshow("m_imgCanny", m_imgCanny); break;
             case CONTOURS: cv::imshow("m_imgContours", m_imgContours); break;
             case TRANSFORM: cv::imshow("m_imgTransform", m_imgTransform); break;

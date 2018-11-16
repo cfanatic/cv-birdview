@@ -12,6 +12,7 @@ public:
     {
         INPUT,
         SMOOTH,
+        THRESHOLD,
         CANNY,
         CONTOURS,
         TRANSFORM
@@ -36,6 +37,7 @@ private:
     cv::Mat m_imgInputClone;
     cv::Mat m_imgGrey;
     cv::Mat m_imgSmooth;
+    cv::Mat m_imgThreshold;
     cv::Mat m_imgCanny;
     cv::Mat m_imgContours;
     cv::Mat m_imgTransform;
