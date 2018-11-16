@@ -38,6 +38,29 @@ void Birdview::save(const std::string &path, const modes &level)
     cv::imwrite(path, image, compression_params);
 }
 
+void Birdview::debug(const modes &level)
+{
+    // Visualize image processing results
+    if (!m_imgInput.empty())
+    {
+        switch (level)
+        {
+            case INPUT: cv::imshow("m_imgInput", m_imgInput); break;
+            case SMOOTH: cv::imshow("m_imgSmooth", m_imgSmooth); break;
+            case THRESHOLD: cv::imshow("m_imgThreshold", m_imgThreshold); break;
+            case CANNY: cv::imshow("m_imgCanny", m_imgCanny); break;
+            case CONTOURS: cv::imshow("m_imgContours", m_imgContours); break;
+            case TRANSFORM: cv::imshow("m_imgTransform", m_imgTransform); break;
+            default: cv::imshow("m_imgInput", m_imgInput); break;
+        }
+        cv::waitKey(0);
+    }
+    else
+    {
+        std::cout << "No image initialized!" << std::endl;
+    }
+}
+
 void Birdview::preprocess()
 {
     // Reduce image resolution
@@ -181,27 +204,4 @@ void Birdview::transform()
     transMatrix = cv::getPerspectiveTransform(sourceVertex, destVertex);
     // Apply perspective transformation to source image
     cv::warpPerspective(m_imgInputClone, m_imgTransform, transMatrix, cv::Size(maxWidth, maxHeight));
-}
-
-void Birdview::debug(const modes &level)
-{
-    // Visualize image processing results
-    if (!m_imgInput.empty())
-    {
-        switch (level)
-        {
-            case INPUT: cv::imshow("m_imgInput", m_imgInput); break;
-            case SMOOTH: cv::imshow("m_imgSmooth", m_imgSmooth); break;
-            case THRESHOLD: cv::imshow("m_imgThreshold", m_imgThreshold); break;
-            case CANNY: cv::imshow("m_imgCanny", m_imgCanny); break;
-            case CONTOURS: cv::imshow("m_imgContours", m_imgContours); break;
-            case TRANSFORM: cv::imshow("m_imgTransform", m_imgTransform); break;
-            default: cv::imshow("m_imgInput", m_imgInput); break;
-        }
-        cv::waitKey(0);
-    }
-    else
-    {
-        std::cout << "No image initialized!" << std::endl;
-    }
 }

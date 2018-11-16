@@ -23,12 +23,12 @@ public:
 
     void load(const std::string &path);
     void save(const std::string &path, const modes &level = TRANSFORM);
+    void debug(const modes &level);
     void preprocess();
     void contours();
     void boundingbox();
     void viewpoints();
     void transform();
-    void debug(const modes &level);
 
 private:
     static const unsigned int SCALE = 5;
