@@ -3,6 +3,7 @@
 
 #include "time.h"
 #include <opencv2/opencv.hpp>
+#include <tesseract/baseapi.h>
 
 class Birdview
 {
@@ -15,7 +16,8 @@ public:
         THRESHOLD,
         CANNY,
         CONTOURS,
-        TRANSFORM
+        TRANSFORM,
+        OCR
     };
 
     explicit Birdview();
@@ -29,9 +31,10 @@ public:
     void boundingbox();
     void viewpoints();
     void transform();
+    void ocr(std::string &text);
 
 private:
-    static const unsigned int SCALE = 5;
+    static const unsigned int SCALE = 4;
     cv::RNG m_rng;
     cv::Mat m_imgInput;
     cv::Mat m_imgInputClone;
@@ -41,6 +44,7 @@ private:
     cv::Mat m_imgCanny;
     cv::Mat m_imgContours;
     cv::Mat m_imgTransform;
+    cv::Mat m_imgCharacter;
     std::vector<std::vector<cv::Point> > m_contours;
     std::vector<cv::Vec4i> m_hierarchy;
     std::vector<cv::Point> m_boundBox;

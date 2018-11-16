@@ -29,6 +29,7 @@ void Birdview::save(const std::string &path, const modes &level)
         case CANNY: image = m_imgCanny; break;
         case CONTOURS: image = m_imgContours; break;
         case TRANSFORM: image = m_imgTransform; break;
+        case OCR: image = m_imgCharacter; break;
     }
 
     // Save transformed image to file
@@ -51,6 +52,7 @@ void Birdview::debug(const modes &level)
             case CANNY: cv::imshow("m_imgCanny", m_imgCanny); break;
             case CONTOURS: cv::imshow("m_imgContours", m_imgContours); break;
             case TRANSFORM: cv::imshow("m_imgTransform", m_imgTransform); break;
+            case OCR: cv::imshow("m_imgCharacter", m_imgCharacter); break;
             default: cv::imshow("m_imgInput", m_imgInput); break;
         }
         cv::waitKey(0);
@@ -204,4 +206,23 @@ void Birdview::transform()
     transMatrix = cv::getPerspectiveTransform(sourceVertex, destVertex);
     // Apply perspective transformation to source image
     cv::warpPerspective(m_imgInputClone, m_imgTransform, transMatrix, cv::Size(maxWidth, maxHeight));
+}
+
+void Birdview::ocr(std::string &text)
+{
+    // Convert to grey scale and apply basic thresholding operation
+    cv::cvtColor(m_imgTransform, m_imgCharacter, cv::COLOR_BGR2GRAY);
+    cv::threshold(m_imgCharacter, m_imgCharacter, 110, 255, cv::THRESH_BINARY);
+
+    // Crop transformed image to region-of-interest
+    cv::Rect roi(30, 90, 540, 230);
+    m_imgCharacter = cv::Mat(m_imgCharacter, roi);
+
+    // 
+    tesseract::TessBaseAPI *ocr = new tesseract::TessBaseAPI();
+    ocr->Init(NULL, "eng", tesseract::OEM_LSTM_ONLY);
+    ocr->SetPageSegMode(tesseract::PSM_AUTO);
+    ocr->SetImage(m_imgCharacter.data, m_imgCharacter.cols, m_imgCharacter.rows, 1, m_imgCharacter.step);
+    text = ocr->GetUTF8Text();
+    ocr->End();
 }
