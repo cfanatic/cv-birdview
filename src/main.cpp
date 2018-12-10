@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
     image.boundingbox();
     image.viewpoints();
     image.transform();
-    image.ocr(text);
-    image.save(path_transform);
-    image.debug(Birdview::OCR);
+    image.debug(Birdview::TRANSFORM);
+    // image.ocr(text);
+    image.save(path_transform, Birdview::TRANSFORM);
 
     std::cout << text << std::endl;
 

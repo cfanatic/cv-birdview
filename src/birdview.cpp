@@ -210,19 +210,35 @@ void Birdview::transform()
 
 void Birdview::ocr(std::string &text)
 {
-    // Convert to grey scale and apply basic thresholding operation
-    cv::cvtColor(m_imgTransform, m_imgCharacter, cv::COLOR_BGR2GRAY);
-    cv::threshold(m_imgCharacter, m_imgCharacter, 110, 255, cv::THRESH_BINARY);
+    int threshold_value = 105;
 
-    // Crop transformed image to region-of-interest
-    cv::Rect roi(30, 90, 540, 230);
-    m_imgCharacter = cv::Mat(m_imgCharacter, roi);
+    // Create a window to display results 
+    cvNamedWindow("Result", CV_WINDOW_NORMAL); 
+    cv::createTrackbar("Threshold", "Result", &threshold_value, 150);
 
-    // 
     tesseract::TessBaseAPI *ocr = new tesseract::TessBaseAPI();
-    ocr->Init(NULL, "eng", tesseract::OEM_LSTM_ONLY);
-    ocr->SetPageSegMode(tesseract::PSM_AUTO);
-    ocr->SetImage(m_imgCharacter.data, m_imgCharacter.cols, m_imgCharacter.rows, 1, m_imgCharacter.step);
-    text = ocr->GetUTF8Text();
+
+    while (1)  
+    {
+        // Display current threshold value
+        std::cout << "Threshold: " << threshold_value << std::endl;
+
+        // Convert to grey scale and apply basic thresholding operation
+        cv::cvtColor(m_imgTransform, m_imgCharacter, cv::COLOR_BGR2GRAY);
+        cv::threshold(m_imgCharacter, m_imgCharacter, threshold_value, 255, cv::THRESH_BINARY);
+
+        // Crop transformed image to region-of-interest
+        cv::Rect roi(30, 90, 540, 230);
+        m_imgCharacter = cv::Mat(m_imgCharacter, roi);
+
+        // Perform optical character recognition
+        ocr->Init(NULL, "eng", tesseract::OEM_LSTM_ONLY);
+        ocr->SetPageSegMode(tesseract::PSM_AUTO);
+        ocr->SetImage(m_imgCharacter.data, m_imgCharacter.cols, m_imgCharacter.rows, 1, m_imgCharacter.step);
+        text = ocr->GetUTF8Text();
+        std::cout << text << std::endl;
+        imshow("Result", m_imgCharacter); 
+        cv::waitKey(0); 
+    }
     ocr->End();
 }
