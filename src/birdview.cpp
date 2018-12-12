@@ -107,8 +107,8 @@ void Birdview::boundingbox()
             // Approximate a polygonal curve with the specified precision
             perimeter = cv::arcLength(m_contours[i], true);
             cv::approxPolyDP(m_contours[i], m_boundBox, 0.02 * perimeter, true);
-            // Bounding box needs to consist of four line segments
-            if (m_boundBox.size() == 4)
+            // Bounding box needs to either consist of four line segments or a specific area
+            if ((m_boundBox.size() == 4) || (area > 80000.0))
             {
                 areaMax = area;
                 areaMaxIndex = i;
