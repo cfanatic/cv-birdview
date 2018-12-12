@@ -30,5 +30,5 @@ Make sure to update the [**configuration file**](https://raw.githubusercontent.c
 
 The image above as an input should yield:
 
-![Transformation](https://raw.githubusercontent.com/cfanatic/cv-birdview/master/res/img_transform.png)
 ![OCR](https://raw.githubusercontent.com/cfanatic/cv-birdview/master/res/img_ocr.png)
+![Transformation](https://raw.githubusercontent.com/cfanatic/cv-birdview/master/res/img_transform.png)
