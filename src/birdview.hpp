@@ -12,8 +12,8 @@ public:
     enum modes
     {
         INPUT,
-        SMOOTH,
         THRESHOLD,
+        SMOOTH,
         CANNY,
         CONTOURS,
         TRANSFORM,
@@ -26,7 +26,7 @@ public:
     void load(const std::string &path);
     void save(const std::string &path, const modes &level = TRANSFORM);
     void debug(const modes &level);
-    void preprocess();
+    void preprocess(const modes &level);
     void contours();
     void boundingbox();
     void viewpoints();

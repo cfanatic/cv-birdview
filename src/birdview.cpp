@@ -63,18 +63,26 @@ void Birdview::debug(const modes &level)
     }
 }
 
-void Birdview::preprocess()
+void Birdview::preprocess(const modes &level)
 {
     // Reduce image resolution
     cv::resize(m_imgInput, m_imgInput, cv::Size(m_imgInput.cols / SCALE, m_imgInput.rows / SCALE));
     // Convert to grey scale
     cv::cvtColor(m_imgInput, m_imgGrey, cv::COLOR_BGR2GRAY);
-    // Apply threshold
-    cv::threshold(m_imgGrey, m_imgThreshold, 165, 255, cv::THRESH_TOZERO);
-    // Apply smoothing filter
-    cv::bilateralFilter(m_imgGrey, m_imgSmooth, 40, 27, 27);
-    // Apply canny edge detection
-    cv::Canny(m_imgThreshold, m_imgCanny, 85, 255);
+    if (level == THRESHOLD)
+    {
+        // Apply threshold operation
+        cv::threshold(m_imgGrey, m_imgThreshold, 165, 255, cv::THRESH_TOZERO);
+        // Apply canny edge detection
+        cv::Canny(m_imgThreshold, m_imgCanny, 85, 255);
+    }
+    else if (level == SMOOTH)
+    {
+        // Apply smoothing filter
+        cv::bilateralFilter(m_imgGrey, m_imgSmooth, 40, 27, 27);
+        // Apply canny edge detection
+        cv::Canny(m_imgSmooth, m_imgCanny, 85, 255);
+    }
     // Create a copy of the source image
     m_imgInputClone = m_imgInput.clone();
 }

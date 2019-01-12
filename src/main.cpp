@@ -18,14 +18,14 @@ int main(int argc, char *argv[])
 
     Birdview image;
     image.load(path_input);
-    image.preprocess();
+    image.preprocess(Birdview::THRESHOLD);
     image.contours();
     image.boundingbox();
     image.viewpoints();
     image.transform();
     image.debug(Birdview::TRANSFORM);
     // image.ocr(text);
-    image.save(path_transform, Birdview::TRANSFORM);
+    // image.save(path_transform, Birdview::TRANSFORM);
 
     std::cout << text << std::endl;
 
