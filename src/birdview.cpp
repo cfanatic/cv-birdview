@@ -129,6 +129,10 @@ void Birdview::boundingbox()
         }
     }
 
+    // Save area and edges
+    m_area = areaMax;
+    m_edges = areaMaxEdges;
+
     // Draw bounding box in green color
     cv::drawContours(m_imgInput, m_contours, areaMaxIndex, cv::Scalar(0, 255, 0), 2, 8, m_hierarchy, 0, cv::Point());
 

@@ -32,6 +32,8 @@ public:
     void viewpoints();
     void transform();
     void ocr(std::string &text);
+    int getArea() { return m_area; }
+    int getEdges() { return m_edges; }
 
 private:
     static const unsigned int SCALE = 4;
@@ -49,6 +51,8 @@ private:
     std::vector<cv::Vec4i> m_hierarchy;
     std::vector<cv::Point> m_boundBox;
     std::vector<cv::Point> m_boundBoxSort;
+    int m_area;
+    int m_edges;
 };
 
 #endif // BIRDVIEW_HPP
