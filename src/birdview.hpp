@@ -33,7 +33,7 @@ public:
     void boundingbox();
     void viewpoints();
     void transform();
-    void ocr(std::string &text);
+    void ocr(std::string &path);
     bool getError() { return m_error; }
 
 private:

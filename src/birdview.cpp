@@ -252,37 +252,50 @@ void Birdview::transform()
     cv::warpPerspective(m_imgInputClone, m_imgTransform, transMatrix, cv::Size(maxWidth, maxHeight));
 }
 
-void Birdview::ocr(std::string &text)
+void Birdview::ocr(std::string &path)
 {
-    int threshold_value = 105;
+    std::string text;
+    std::string::iterator it;
+    std::ofstream file;
+    int threshold = 105;
+    int key = 0;
 
-    // Create a window to display results 
-    cvNamedWindow("Result", CV_WINDOW_NORMAL); 
-    cv::createTrackbar("Threshold", "Result", &threshold_value, 150);
-
+    // Initialize character recognition library
     tesseract::TessBaseAPI *ocr = new tesseract::TessBaseAPI();
 
-    while (1)  
+    // Create a window to display results
+    cv::namedWindow("Result", CV_WINDOW_NORMAL);
+    cv::createTrackbar("Threshold", "Result", &threshold, 150);
+
+    // Run character recognition until ESC key is pressed
+    while (key != 27)
     {
         // Display current threshold value
-        std::cout << "Threshold: " << threshold_value << std::endl;
+        std::cout << "Threshold: " << threshold << std::endl;
 
         // Convert to grey scale and apply basic thresholding operation
         cv::cvtColor(m_imgTransform, m_imgCharacter, cv::COLOR_BGR2GRAY);
-        cv::threshold(m_imgCharacter, m_imgCharacter, threshold_value, 255, cv::THRESH_BINARY);
+        cv::threshold(m_imgCharacter, m_imgCharacter, threshold, 255, cv::THRESH_BINARY);
 
-        // Crop transformed image to region-of-interest
-        cv::Rect roi(30, 90, 540, 230);
-        m_imgCharacter = cv::Mat(m_imgCharacter, roi);
-
-        // Perform optical character recognition
+        // Perform character recognition
         ocr->Init(NULL, "eng", tesseract::OEM_LSTM_ONLY);
         ocr->SetPageSegMode(tesseract::PSM_AUTO);
         ocr->SetImage(m_imgCharacter.data, m_imgCharacter.cols, m_imgCharacter.rows, 1, m_imgCharacter.step);
         text = ocr->GetUTF8Text();
+
+        // Remove empty lines
+        it = std::unique(text.begin(), text.end(), [] (char a, char b) { return a == '\n' && b == '\n'; });
+        text.erase(it, text.end());
+
+        // Show results
         std::cout << text << std::endl;
-        imshow("Result", m_imgCharacter); 
-        cv::waitKey(0); 
+        imshow("Result", m_imgCharacter);
+        key = cv::waitKey(0); 
     }
     ocr->End();
+
+    // Save results to file
+    file.open(path);
+    file << text;
+    file.close();
 }

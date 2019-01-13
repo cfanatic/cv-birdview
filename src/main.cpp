@@ -19,15 +19,15 @@ int main(int argc, char *argv[])
     std::string path_contours = boost::replace_all_copy(path_output, ".jpg", "_4_contours.jpg");
     std::string path_transform = boost::replace_all_copy(path_output, ".jpg", "_5_transform.jpg");
     std::string path_character = boost::replace_all_copy(path_output, ".jpg", "_6_character.jpg");
-    std::string text;
+    std::string path_text = boost::replace_all_copy(path_output, ".jpg", "_text.txt");
 
-    std::vector<std::string> path_result;
-    path_result.push_back(path_threshold);
-    path_result.push_back(path_smooth);
-    path_result.push_back(path_canny);
-    path_result.push_back(path_contours);
-    path_result.push_back(path_transform);
-    path_result.push_back(path_character);
+    std::vector<std::string> path_images;
+    path_images.push_back(path_threshold);
+    path_images.push_back(path_smooth);
+    path_images.push_back(path_canny);
+    path_images.push_back(path_contours);
+    path_images.push_back(path_transform);
+    path_images.push_back(path_character);
 
     std::vector<Birdview::modes> pre_level;
     std::vector<Birdview::modes>::iterator it;
@@ -47,8 +47,8 @@ int main(int argc, char *argv[])
         {
             image.viewpoints();
             image.transform();
-            // image.ocr(text);
-            // image.save(path_result);
+            image.ocr(path_text);
+            image.save(path_images);
         }
         if (!image.getError())
         {
