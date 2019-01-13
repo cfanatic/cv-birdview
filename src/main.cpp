@@ -18,20 +18,19 @@ int main(int argc, char *argv[])
 
     Birdview image;
     image.load(path_input);
-    image.preprocess(Birdview::THRESHOLD);
+    image.preprocess();
     image.contours();
     image.boundingbox();
-    if ((image.getEdges() >= 4) && (image.getArea() > 10000))
+    if (!image.getError())
     {
         image.viewpoints();
         image.transform();
-        image.debug(Birdview::TRANSFORM);
         // image.ocr(text);
         // image.save(path_transform, Birdview::TRANSFORM);
     }
-    else
+    if (!image.getError())
     {
-        std::cout << "Error:\t Could not determine image!" << std::endl;
+        image.debug(Birdview::TRANSFORM);
     }
 
     return 0;

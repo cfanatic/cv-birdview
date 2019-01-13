@@ -26,14 +26,13 @@ public:
     void load(const std::string &path);
     void save(const std::string &path, const modes &level = TRANSFORM);
     void debug(const modes &level);
-    void preprocess(const modes &level);
+    void preprocess(const modes &level = THRESHOLD);
     void contours();
     void boundingbox();
     void viewpoints();
     void transform();
     void ocr(std::string &text);
-    int getArea() { return m_area; }
-    int getEdges() { return m_edges; }
+    bool getError() { return m_error; }
 
 private:
     static const unsigned int SCALE = 4;
@@ -51,8 +50,7 @@ private:
     std::vector<cv::Vec4i> m_hierarchy;
     std::vector<cv::Point> m_boundBox;
     std::vector<cv::Point> m_boundBoxSort;
-    int m_area;
-    int m_edges;
+    bool m_error;
 };
 
 #endif // BIRDVIEW_HPP
