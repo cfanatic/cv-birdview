@@ -163,7 +163,7 @@ void Birdview::boundingbox()
     }
 
     // Save extraction results
-    m_error = (areaMax < 10000) || (areaMaxEdges < 4);
+    m_error = (areaMax < 10000.0) || (areaMaxEdges < 4);
 
     // Draw bounding box in green color
     cv::drawContours(m_imgInput, m_contours, areaMaxIndex, cv::Scalar(0, 255, 0), 2, 8, m_hierarchy, 0, cv::Point());
@@ -257,7 +257,7 @@ void Birdview::ocr(std::string &path)
     std::string text;
     std::string::iterator it;
     std::ofstream file;
-    int threshold = 105;
+    int threshold = 100;
     int key = 0;
 
     // Initialize character recognition library
@@ -270,9 +270,6 @@ void Birdview::ocr(std::string &path)
     // Run character recognition until ESC key is pressed
     while (key != 27)
     {
-        // Display current threshold value
-        std::cout << "Threshold: " << threshold << std::endl;
-
         // Convert to grey scale and apply basic thresholding operation
         cv::cvtColor(m_imgTransform, m_imgCharacter, cv::COLOR_BGR2GRAY);
         cv::threshold(m_imgCharacter, m_imgCharacter, threshold, 255, cv::THRESH_BINARY);
@@ -288,7 +285,7 @@ void Birdview::ocr(std::string &path)
         text.erase(it, text.end());
 
         // Show results
-        std::cout << text << std::endl;
+        std::cout << "Threshold: " << threshold << std::endl << text << std::endl;
         imshow("Result", m_imgCharacter);
         key = cv::waitKey(0); 
     }
