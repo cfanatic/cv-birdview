@@ -29,22 +29,35 @@ int main(int argc, char *argv[])
     path_result.push_back(path_transform);
     path_result.push_back(path_character);
 
+    std::vector<Birdview::modes> pre_level;
+    std::vector<Birdview::modes>::iterator it;
+    pre_level.push_back(Birdview::THRESHOLD);
+    pre_level.push_back(Birdview::SMOOTH);
+    it = pre_level.begin();
+
     Birdview image;
-    image.load(path_input);
-    image.preprocess(Birdview::THRESHOLD);
-    image.contours();
-    image.boundingbox();
-    if (!image.getError())
+    do
     {
-        image.viewpoints();
-        image.transform();
-        // image.ocr(text);
-        // image.save(path_result);
+        std::cout << "----------------------------------------" << std::endl;
+        image.load(path_input);
+        image.preprocess(pre_level[it - pre_level.begin()]);
+        image.contours();
+        image.boundingbox();
+        if (!image.getError())
+        {
+            image.viewpoints();
+            image.transform();
+            // image.ocr(text);
+            // image.save(path_result);
+        }
+        if (!image.getError())
+        {
+            image.debug(Birdview::TRANSFORM);
+            break;
+        }
+        ++it;
     }
-    if (!image.getError())
-    {
-        image.debug(Birdview::TRANSFORM);
-    }
+    while (it != pre_level.end());
 
     return 0;
 }
