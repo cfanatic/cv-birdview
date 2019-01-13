@@ -10,7 +10,7 @@ Birdview::~Birdview()
 {
 }
 
-void Birdview::clear()
+void Birdview::release()
 {
     // Force image data deallocation
     m_imgInput.release();
@@ -26,9 +26,12 @@ void Birdview::clear()
 
 void Birdview::load(const std::string &path)
 {
-    // Load source image from file
-    clear();
+    // Clear existing image
+    release();
+    // Load image from file
     m_imgInput = cv::imread(path);
+    // Reduce image resolution
+    cv::resize(m_imgInput, m_imgInput, cv::Size(m_imgInput.cols / SCALE, m_imgInput.rows / SCALE));
 }
 
 void Birdview::save(const std::string &path, const modes &level)
@@ -97,8 +100,6 @@ void Birdview::debug(const modes &level)
 
 void Birdview::preprocess(const modes &level)
 {
-    // Reduce image resolution
-    cv::resize(m_imgInput, m_imgInput, cv::Size(m_imgInput.cols / SCALE, m_imgInput.rows / SCALE));
     // Convert to grey scale
     cv::cvtColor(m_imgInput, m_imgGrey, cv::COLOR_BGR2GRAY);
     if (level == THRESHOLD)

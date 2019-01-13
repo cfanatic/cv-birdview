@@ -23,7 +23,7 @@ public:
     explicit Birdview();
     ~Birdview();
 
-    void clear();
+    void release();
     void load(const std::string &path);
     void save(const std::string &path, const modes &level);
     void save(const std::vector<std::string> &path);
