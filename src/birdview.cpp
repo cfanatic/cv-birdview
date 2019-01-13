@@ -27,6 +27,7 @@ void Birdview::clear()
 void Birdview::load(const std::string &path)
 {
     // Load source image from file
+    clear();
     m_imgInput = cv::imread(path);
 }
 
@@ -47,10 +48,27 @@ void Birdview::save(const std::string &path, const modes &level)
     }
 
     // Save transformed image to file
-    std::vector<int> compression_params;
-    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
-    compression_params.push_back(5);
-    cv::imwrite(path, image, compression_params);
+    std::vector<int> compression;
+    compression.push_back(CV_IMWRITE_PNG_COMPRESSION);
+    compression.push_back(5);
+    cv::imwrite(path, image, compression);
+}
+
+void Birdview::save(const std::vector<std::string> &path)
+{
+    cv::Mat image[] = {m_imgThreshold, m_imgSmooth, m_imgCanny, m_imgContours, m_imgTransform, m_imgCharacter};
+
+    // Save all images at once for each transformation step
+    std::vector<int> compression;
+    compression.push_back(CV_IMWRITE_PNG_COMPRESSION);
+    compression.push_back(5);
+    for (std::vector<std::string>::const_iterator it = path.begin(); it != path.end(); ++it)
+    {
+        if (!image[it - path.begin()].empty())
+        {
+            cv::imwrite(*it, image[it - path.begin()], compression);
+        }
+    }
 }
 
 void Birdview::debug(const modes &level)

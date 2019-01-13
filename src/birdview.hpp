@@ -25,9 +25,10 @@ public:
 
     void clear();
     void load(const std::string &path);
-    void save(const std::string &path, const modes &level = TRANSFORM);
+    void save(const std::string &path, const modes &level);
+    void save(const std::vector<std::string> &path);
     void debug(const modes &level);
-    void preprocess(const modes &level = THRESHOLD);
+    void preprocess(const modes &level);
     void contours();
     void boundingbox();
     void viewpoints();
