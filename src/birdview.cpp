@@ -289,10 +289,10 @@ void Birdview::ocr(std::string &path)
         imshow("Result", m_imgCharacter);
         key = cv::waitKey(0); 
     }
-    ocr->End();
 
     // Save results to file
     file.open(path);
-    file << text;
+    file << "Threshold: " << threshold << std::endl << std::endl << text;
     file.close();
+    ocr->End();
 }
