@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     std::string text;
 
     Birdview image;
+    image.clear();
     image.load(path_input);
     image.preprocess();
     image.contours();

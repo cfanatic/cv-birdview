@@ -23,6 +23,7 @@ public:
     explicit Birdview();
     ~Birdview();
 
+    void clear();
     void load(const std::string &path);
     void save(const std::string &path, const modes &level = TRANSFORM);
     void debug(const modes &level);

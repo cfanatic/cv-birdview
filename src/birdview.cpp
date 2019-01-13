@@ -10,6 +10,20 @@ Birdview::~Birdview()
 {
 }
 
+void Birdview::clear()
+{
+    // Force image data deallocation
+    m_imgInput.release();
+    m_imgInputClone.release();
+    m_imgGrey.release();
+    m_imgSmooth.release();
+    m_imgThreshold.release();
+    m_imgCanny.release();
+    m_imgContours.release();
+    m_imgTransform.release();
+    m_imgCharacter.release();
+}
+
 void Birdview::load(const std::string &path)
 {
     // Load source image from file
@@ -59,7 +73,7 @@ void Birdview::debug(const modes &level)
     }
     else
     {
-        std::cout << "No image initialized!" << std::endl;
+        std::cout << "Error:\t No image initialized!" << std::endl;
     }
 }
 
