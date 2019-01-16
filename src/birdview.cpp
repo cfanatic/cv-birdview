@@ -288,6 +288,15 @@ void Birdview::ocr(std::string &path)
         std::cout << "Threshold: " << threshold << std::endl << text << std::endl;
         imshow("Result", m_imgCharacter);
         key = cv::waitKey(0); 
+
+        // Adjust threshold level using arrow keys
+        switch (key)
+        {
+            case 0: threshold += 1; break;
+            case 1: threshold -= 1; break;
+            case 2: threshold -= 5; break;
+            case 3: threshold += 5; break;
+        }
     }
 
     // Save results to file
