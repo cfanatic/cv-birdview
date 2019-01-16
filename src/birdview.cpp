@@ -270,9 +270,12 @@ void Birdview::ocr(std::string &path)
     // Run character recognition until ESC key is pressed
     while (key != 27)
     {
-        // Convert to grey scale and apply basic thresholding operation
+        // Convert to grey scale 
         cv::cvtColor(m_imgTransform, m_imgCharacter, cv::COLOR_BGR2GRAY);
+        // Apply basic thresholding operation
         cv::threshold(m_imgCharacter, m_imgCharacter, threshold, 255, cv::THRESH_BINARY);
+        // Perform image denoising
+        cv::fastNlMeansDenoising(m_imgCharacter, m_imgCharacter, 40, 7, 21);
 
         // Perform character recognition
         ocr->Init(NULL, "eng", tesseract::OEM_LSTM_ONLY);
