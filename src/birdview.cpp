@@ -285,7 +285,8 @@ void Birdview::ocr(std::string &path)
         text.erase(it, text.end());
 
         // Show results
-        std::cout << "Threshold: " << threshold << std::endl << text << std::endl;
+        std::cout << std::endl << text;
+        cv::putText(m_imgCharacter, std::to_string(threshold), cv::Point2f(10, 20), 5, 1, cv::Scalar(0, 0, 255), 2);
         imshow("Result", m_imgCharacter);
         key = cv::waitKey(0); 
 
