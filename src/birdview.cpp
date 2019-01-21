@@ -252,7 +252,7 @@ void Birdview::transform()
     cv::warpPerspective(m_imgInputClone, m_imgTransform, transMatrix, cv::Size(maxWidth, maxHeight));
 }
 
-void Birdview::ocr(std::string &path)
+void Birdview::ocr(const std::string &path)
 {
     std::string text;
     std::string::iterator it;
