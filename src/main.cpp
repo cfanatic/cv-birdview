@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
         {
             image.viewpoints();
             image.transform();
-            image.ocr(path_text);
+            image.ocr(Birdview::CHECK, path_text);
             image.save(path_images);
         }
         if (!image.getError())

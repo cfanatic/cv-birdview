@@ -252,11 +252,12 @@ void Birdview::transform()
     cv::warpPerspective(m_imgInputClone, m_imgTransform, transMatrix, cv::Size(maxWidth, maxHeight));
 }
 
-void Birdview::ocr(const std::string &path)
+void Birdview::ocr(const input &input, const std::string &path)
 {
     std::string text;
     std::string::iterator it;
     std::ofstream file;
+    cv::Mat imgRoi;
     int threshold = 100;
     int key = 0;
 
@@ -267,15 +268,26 @@ void Birdview::ocr(const std::string &path)
     cv::namedWindow("Result", CV_WINDOW_NORMAL);
     cv::createTrackbar("Threshold", "Result", &threshold, 150);
 
+    // Create region-of-interest to crop image
+    if (input == CHECK)
+    {
+        cv::Rect roi(0.05 * m_imgTransform.cols, 0.18 * m_imgTransform.rows, 0.6 * m_imgTransform.cols,  0.42 * m_imgTransform.rows);
+        imgRoi = cv::Mat(m_imgTransform, roi);
+    }
+    else
+    {
+        imgRoi = m_imgTransform;
+    }
+
     // Run character recognition until ESC key is pressed
     while (key != 27)
     {
         // Convert to grey scale 
-        cv::cvtColor(m_imgTransform, m_imgCharacter, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(imgRoi, m_imgCharacter, cv::COLOR_BGR2GRAY);
         // Apply basic thresholding operation
         cv::threshold(m_imgCharacter, m_imgCharacter, threshold, 255, cv::THRESH_BINARY);
         // Perform image denoising
-        cv::fastNlMeansDenoising(m_imgCharacter, m_imgCharacter, 40, 7, 21);
+        cv::fastNlMeansDenoising(m_imgCharacter, m_imgCharacter, 40, 7, 17);
 
         // Perform character recognition
         ocr->Init(NULL, "eng", tesseract::OEM_LSTM_ONLY);
@@ -289,7 +301,6 @@ void Birdview::ocr(const std::string &path)
 
         // Show results
         std::cout << std::endl << text;
-        cv::putText(m_imgCharacter, std::to_string(threshold), cv::Point2f(10, 20), 5, 1, cv::Scalar(0, 0, 255), 2);
         imshow("Result", m_imgCharacter);
         key = cv::waitKey(0); 
 

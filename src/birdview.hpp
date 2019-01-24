@@ -19,6 +19,11 @@ public:
         TRANSFORM,
         OCR
     };
+    enum input
+    {
+        CARD,
+        CHECK,
+    };
 
     explicit Birdview();
     ~Birdview();
@@ -33,7 +38,7 @@ public:
     void boundingbox();
     void viewpoints();
     void transform();
-    void ocr(const std::string &path);
+    void ocr(const input &input, const std::string &path);
     bool getError() { return m_error; }
 
 private:
