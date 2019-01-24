@@ -257,7 +257,7 @@ void Birdview::ocr(const input &input, const std::string &path)
     std::string text;
     std::string::iterator it;
     std::ofstream file;
-    cv::Mat imgRoi;
+    cv::Mat imgSource = m_imgTransform;
     int threshold = 100;
     int key = 0;
 
@@ -272,18 +272,14 @@ void Birdview::ocr(const input &input, const std::string &path)
     if (input == CHECK)
     {
         cv::Rect roi(0.05 * m_imgTransform.cols, 0.18 * m_imgTransform.rows, 0.6 * m_imgTransform.cols,  0.42 * m_imgTransform.rows);
-        imgRoi = cv::Mat(m_imgTransform, roi);
-    }
-    else
-    {
-        imgRoi = m_imgTransform;
+        imgSource = cv::Mat(m_imgTransform, roi);
     }
 
     // Run character recognition until ESC key is pressed
     while (key != 27)
     {
         // Convert to grey scale 
-        cv::cvtColor(imgRoi, m_imgCharacter, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(imgSource, m_imgCharacter, cv::COLOR_BGR2GRAY);
         // Apply basic thresholding operation
         cv::threshold(m_imgCharacter, m_imgCharacter, threshold, 255, cv::THRESH_BINARY);
         // Perform image denoising
