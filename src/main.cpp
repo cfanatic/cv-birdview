@@ -29,18 +29,18 @@ int main(int argc, char *argv[])
     path_images.push_back(path_transform);
     path_images.push_back(path_character);
 
-    std::vector<Birdview::modes> pre_level;
-    std::vector<Birdview::modes>::iterator it;
-    pre_level.push_back(Birdview::THRESHOLD);
-    pre_level.push_back(Birdview::SMOOTH);
-    it = pre_level.begin();
+    std::vector<Birdview::mode> pre_mode;
+    std::vector<Birdview::mode>::iterator it;
+    pre_mode.push_back(Birdview::THRESHOLD);
+    pre_mode.push_back(Birdview::SMOOTH);
+    it = pre_mode.begin();
 
     Birdview image;
     do
     {
         std::cout << "----------------------------------------" << std::endl;
         image.load(path_input);
-        image.preprocess(pre_level[it - pre_level.begin()]);
+        image.preprocess(pre_mode[it - pre_mode.begin()]);
         image.contours();
         image.boundingbox();
         if (!image.getError())
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         }
         ++it;
     }
-    while (it != pre_level.end());
+    while (it != pre_mode.end());
 
     return 0;
 }

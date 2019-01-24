@@ -9,7 +9,7 @@ class Birdview
 {
 
 public:
-    enum modes
+    enum mode
     {
         INPUT,
         THRESHOLD,
@@ -30,10 +30,10 @@ public:
 
     void release();
     void load(const std::string &path);
-    void save(const std::string &path, const modes &level);
+    void save(const std::string &path, const mode &mode);
     void save(const std::vector<std::string> &path);
-    void debug(const modes &level);
-    void preprocess(const modes &level);
+    void debug(const mode &mode);
+    void preprocess(const mode &mode);
     void contours();
     void boundingbox();
     void viewpoints();

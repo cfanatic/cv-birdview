@@ -34,12 +34,12 @@ void Birdview::load(const std::string &path)
     cv::resize(m_imgInput, m_imgInput, cv::Size(m_imgInput.cols / SCALE, m_imgInput.rows / SCALE));
 }
 
-void Birdview::save(const std::string &path, const modes &level)
+void Birdview::save(const std::string &path, const mode &mode)
 {
     cv::Mat image;
 
     // Select image to save
-    switch (level)
+    switch (mode)
     {
         case INPUT: image = m_imgInput; break;
         case SMOOTH: image = m_imgSmooth; break;
@@ -74,12 +74,12 @@ void Birdview::save(const std::vector<std::string> &path)
     }
 }
 
-void Birdview::debug(const modes &level)
+void Birdview::debug(const mode &mode)
 {
     // Visualize image processing results
     if (!m_imgInput.empty())
     {
-        switch (level)
+        switch (mode)
         {
             case INPUT: cv::imshow("m_imgInput", m_imgInput); break;
             case SMOOTH: cv::imshow("m_imgSmooth", m_imgSmooth); break;
@@ -98,18 +98,18 @@ void Birdview::debug(const modes &level)
     }
 }
 
-void Birdview::preprocess(const modes &level)
+void Birdview::preprocess(const mode &mode)
 {
     // Convert to grey scale
     cv::cvtColor(m_imgInput, m_imgGrey, cv::COLOR_BGR2GRAY);
-    if (level == THRESHOLD)
+    if (mode == THRESHOLD)
     {
         // Apply threshold operation
         cv::threshold(m_imgGrey, m_imgThreshold, 165, 255, cv::THRESH_TOZERO);
         // Apply canny edge detection
         cv::Canny(m_imgThreshold, m_imgCanny, 85, 255);
     }
-    else if (level == SMOOTH)
+    else if (mode == SMOOTH)
     {
         // Apply smoothing filter
         cv::bilateralFilter(m_imgGrey, m_imgSmooth, 40, 27, 27);
