@@ -13,7 +13,7 @@ Run this on anything you want to digitize such as checks, receipts, business car
 ## Requirements
 Developed and tested on the following setup: 
 - CMake 3.0.0
-- OpenCV 3.4.2
+- OpenCV 4.1.0
 - Boost 1.67.0
 - Tesseract 4.0.0
 

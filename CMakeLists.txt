@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(Birdview CXX)
 
-find_package(OpenCV 3.4.2 REQUIRED)
+find_package(OpenCV 4.1.0 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 find_package(Boost 1.67.0 REQUIRED)

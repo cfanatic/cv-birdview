@@ -52,7 +52,7 @@ void Birdview::save(const std::string &path, const mode &mode)
 
     // Save transformed image to file
     std::vector<int> compression;
-    compression.push_back(CV_IMWRITE_PNG_COMPRESSION);
+    compression.push_back(cv::IMWRITE_PNG_COMPRESSION);
     compression.push_back(5);
     cv::imwrite(path, image, compression);
 }
@@ -63,7 +63,7 @@ void Birdview::save(const std::vector<std::string> &path)
 
     // Save all images at once for each transformation step
     std::vector<int> compression;
-    compression.push_back(CV_IMWRITE_PNG_COMPRESSION);
+    compression.push_back(cv::IMWRITE_PNG_COMPRESSION);
     compression.push_back(5);
     for (std::vector<std::string>::const_iterator it = path.begin(); it != path.end(); ++it)
     {
@@ -265,7 +265,7 @@ void Birdview::ocr(const input &input, const std::string &path)
     tesseract::TessBaseAPI *ocr = new tesseract::TessBaseAPI();
 
     // Create a window to display results
-    cv::namedWindow("Result", CV_WINDOW_NORMAL);
+    cv::namedWindow("Result", cv::WINDOW_NORMAL);
     cv::createTrackbar("Threshold", "Result", &threshold, 150);
 
     // Create region-of-interest to crop image
